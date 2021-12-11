@@ -93,7 +93,6 @@ def afficher_pop_all_departements_regions():
     request = "SELECT SUM(population_totale), code_departement FROM Communes GROUP BY code_departement"
     pops = c.execute(request)
 
-
     for pop in pops:
         print("Département " + str(pop[1]) + " a une population totale de " + str(pop[0]))
 
@@ -107,6 +106,10 @@ def afficher_pop_all_departements_regions():
 
     for pop in pops:
         print("Régions " + str(pop[1]) + " a une population totale de " + str(pop[0]))
+
+
+def afficher_meme_commune_different_departement():
+    print("affichage")
 
 
 create_tables()  # cree les 3 tables dans data_insee.db
