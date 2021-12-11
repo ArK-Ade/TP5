@@ -109,7 +109,11 @@ def afficher_pop_all_departements_regions():
 
 
 def afficher_meme_commune_different_departement():
-    print("affichage")
+    request = "SELECT nom_commune, code_departement FROM Communes GROUP BY nom_commune,code_departement"
+    pops = c.execute(request)
+
+    for pop in pops:
+        print("Commune " + str(pop[0]) + " Departement " + str(pop[1]))
 
 
 create_tables()  # cree les 3 tables dans data_insee.db
@@ -117,4 +121,5 @@ parsing_communes()
 parsing_departements()
 parsing_regions()
 
-afficher_pop_all_departements_regions()
+#afficher_pop_all_departements_regions()
+afficher_meme_commune_different_departement()
