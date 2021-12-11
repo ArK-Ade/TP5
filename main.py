@@ -87,15 +87,17 @@ def parsing_regions():
 
 
 def afficher_pop_all_departements_regions():
-    print("affichage population départements")
+    # affichage des populations totales par départements
+    print("Affichage population départements")
 
     request = "SELECT SUM(population_totale), code_departement FROM Communes GROUP BY code_departement"
     pops = c.execute(request)
 
-    # affichage des populations totales par départements
+
     for pop in pops:
         print("Département " + str(pop[1]) + " a une population totale de " + str(pop[0]))
 
+    # affichage des populations totales par régions
     print("affichage population régions")
     request = "SELECT SUM(population_totale), code_region " \
               "FROM Communes INNER JOIN Departements ON Communes.code_departement = Departements.code_departement " \
