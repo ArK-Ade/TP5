@@ -86,12 +86,25 @@ def parsing_regions():
     file.close()
 
 
-def afficher_pop_all_departements():
+def afficher_pop_all_departements_regions():
+    print("affichage population départements")
+
     request = "SELECT SUM(population_totale), code_departement FROM Communes GROUP BY code_departement"
     pops = c.execute(request)
 
+    # affichage des populations totales par départements
     for pop in pops:
-        print("département " + str(pop[1]) + " a une population totale de " + str(pop[0]))
+        print("Département " + str(pop[1]) + " a une population totale de " + str(pop[0]))
+
+    print("affichage population régions")
+    request = "SELECT SUM(population_totale), code_region " \
+              "FROM Communes INNER JOIN Departements ON Communes.code_departement = Departements.code_departement " \
+              "GROUP BY code_region"
+
+    pops = c.execute(request)
+
+    for pop in pops:
+        print("Régions " + str(pop[1]) + " a une population totale de " + str(pop[0]))
 
 
 create_tables()  # cree les 3 tables dans data_insee.db
@@ -99,4 +112,4 @@ parsing_communes()
 parsing_departements()
 parsing_regions()
 
-afficher_pop_all_departements()
+afficher_pop_all_departements_regions()
