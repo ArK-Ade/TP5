@@ -11,6 +11,10 @@ https://stackoverflow.com/questions/16846460/skip-the-last-row-of-csv-file-when-
 import sqlite3
 import os
 import xml.etree.ElementTree as ET
+from xml import etree
+
+import lxml
+import lxml.etree as etree
 
 os.remove("data_insee.db")
 
@@ -141,29 +145,101 @@ def afficher_meme_commune_different_departement():
         count += 1
 
 
+# Sauvegarde la base de données dans le fichier database.xml
 def sauvegarde_bdd():
-    tree = ET.parse('database.xml')
-    root = tree.getroot()
-    print(root[0][1])
+    # Initialisation des tableaux
 
-    # TODO Creer le fichier XML s'il n'existe pas
-    # Creer la source source data dans le fichier
-    # creer un parent Commune dont les enfants sont id, code_departement etc
-    # creer Departements
-    # creer Regions
-    # Faire boucle : une commande SQL qui parse la table Commune
-    # Ajouter au fichier XML
-    # Faire boucle : une commande SQL qui parse la table Departement
-    # Ajouter au fichier XML
-    # Faire boucle : une commande SQL qui parse la table Regions
-    # Ajouter au fichier XML
+    tableauCommunes = []
+    tableauDepartements = []
+    tableauRegions = []
+
+    # Initialisation XML
+
+    root = ET.Element("root")
+    Communes = ET.SubElement(root, "Communes")
+    Departements = ET.SubElement(root, "Departements")
+    Regions = ET.SubElement(root, "Regions")
+
+    # Insertion des Communes
+
+    request = "SELECT * FROM Communes"
+    pops = c.execute(request)
+
+    for pop in pops:
+        tableauCommunes.append(pop)
+
+    for ligne in tableauCommunes:
+        Commune = ET.SubElement(Communes, "commune")
+        Commune.set("Id", str(ligne[0]))
+
+        code_departement = ET.SubElement(Commune, "code_departement")
+        code_departement.text = ligne[1]
+
+        code_commune = ET.SubElement(Commune, "code_commune")
+        code_commune.text = str(ligne[2])
+
+        nom_commune = ET.SubElement(Commune, "nom_commune")
+        nom_commune.text = ligne[3]
+
+        population_totale = ET.SubElement(Commune, "population_totale")
+        population_totale.text = str(ligne[4])
+
+    # Insertion des Departements
+
+    request = "SELECT * FROM Departements"
+    pops = c.execute(request)
+
+    for pop in pops:
+        tableauDepartements.append(pop)
+
+    for ligne in tableauDepartements:
+        Departement = ET.SubElement(Departements, "Departement")
+        Departement.set("Id_departement", str(ligne[0]))
+
+        code_departement = ET.SubElement(Departement, "code_departement")
+        code_departement.text = ligne[1]
+
+        nom_departement = ET.SubElement(Departement, "nom_departement")
+        nom_departement.text = ligne[2]
+
+        code_region = ET.SubElement(Departement, "code_region")
+        code_region.text = str(ligne[3])
+
+    # Insertion des Regions
+
+    request = "SELECT * FROM Regions"
+    pops = c.execute(request)
+
+    for pop in pops:
+        tableauRegions.append(pop)
+
+    for ligne in tableauRegions:
+        Region = ET.SubElement(Regions, "Region")
+        Region.set("Id_departement", str(ligne[0]))
+
+        nom_region = ET.SubElement(Region, "nom_region")
+        nom_region.text = str(ligne[1])
+
+        code_region = ET.SubElement(Region, "code_region")
+        code_region.text = ligne[2]
+
+    # Creation du fichier XML
+    tree = ET.ElementTree(root)
+    tree.write("database.xml")
+
+    # Parsing et affichage du fichier XML
+    tree = lxml.etree.parse("database.xml")
+    pretty = lxml.etree.tostring(tree, encoding="unicode", pretty_print=True)
+    print(pretty)
 
 
 def restauration_bdd():
-    pass
     # TODO Reinitaliser la bdd
-    create_tables()
+    # create_tables()
     # TODO Parser le fichier XML et injecter les données dans la BDD
+    tree = ET.parse('database.xml')
+    root = tree.getroot()
+    print(root[0][1])
 
 
 create_tables()  # cree les 3 tables dans data_insee.db
@@ -174,3 +250,4 @@ parsing_regions()
 # afficher_pop_all_departements_regions()
 # afficher_meme_commune_different_departement()
 sauvegarde_bdd()
+# restauration_bdd()
