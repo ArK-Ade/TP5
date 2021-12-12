@@ -10,6 +10,7 @@ https://stackoverflow.com/questions/16846460/skip-the-last-row-of-csv-file-when-
 
 import sqlite3
 import os
+import xml.etree.ElementTree as ET
 
 os.remove("data_insee.db")
 
@@ -85,9 +86,9 @@ def parsing_regions():
 
     file.close()
 
+
 # affichage des populations totales par départements
 def afficher_pop_all_departements_regions():
-
     print("Affichage population départements")
 
     request = "SELECT SUM(population_totale), code_departement FROM Communes GROUP BY code_departement"
@@ -107,9 +108,9 @@ def afficher_pop_all_departements_regions():
     for pop in pops:
         print("Régions " + str(pop[1]) + " a une population totale de " + str(pop[0]))
 
+
 # affichage des communes possédant le meme nom dans diverses communes
 def afficher_meme_commune_different_departement():
-
     request = "SELECT nom_commune, code_departement FROM Communes GROUP BY nom_commune,code_departement"
     pops = c.execute(request)
 
@@ -140,10 +141,36 @@ def afficher_meme_commune_different_departement():
         count += 1
 
 
+def sauvegarde_bdd():
+    tree = ET.parse('database.xml')
+    root = tree.getroot()
+    print(root[0][1])
+
+    # TODO Creer le fichier XML s'il n'existe pas
+    # Creer la source source data dans le fichier
+    # creer un parent Commune dont les enfants sont id, code_departement etc
+    # creer Departements
+    # creer Regions
+    # Faire boucle : une commande SQL qui parse la table Commune
+    # Ajouter au fichier XML
+    # Faire boucle : une commande SQL qui parse la table Departement
+    # Ajouter au fichier XML
+    # Faire boucle : une commande SQL qui parse la table Regions
+    # Ajouter au fichier XML
+
+
+def restauration_bdd():
+    pass
+    # TODO Reinitaliser la bdd
+    create_tables()
+    # TODO Parser le fichier XML et injecter les données dans la BDD
+
+
 create_tables()  # cree les 3 tables dans data_insee.db
 parsing_communes()
 parsing_departements()
 parsing_regions()
 
-#afficher_pop_all_departements_regions()
-afficher_meme_commune_different_departement()
+# afficher_pop_all_departements_regions()
+# afficher_meme_commune_different_departement()
+sauvegarde_bdd()
