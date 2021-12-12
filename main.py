@@ -85,9 +85,9 @@ def parsing_regions():
 
     file.close()
 
-
+# affichage des populations totales par départements
 def afficher_pop_all_departements_regions():
-    # affichage des populations totales par départements
+
     print("Affichage population départements")
 
     request = "SELECT SUM(population_totale), code_departement FROM Communes GROUP BY code_departement"
@@ -107,13 +107,37 @@ def afficher_pop_all_departements_regions():
     for pop in pops:
         print("Régions " + str(pop[1]) + " a une population totale de " + str(pop[0]))
 
-
+# affichage des communes possédant le meme nom dans diverses communes
 def afficher_meme_commune_different_departement():
+
     request = "SELECT nom_commune, code_departement FROM Communes GROUP BY nom_commune,code_departement"
     pops = c.execute(request)
 
+    affichageCommune = "Commune "
+    affichageDepartement = " Departement "
+    prevCommune = ""
+    prevCodeDepartement = []
+    count = 0
+
     for pop in pops:
-        print("Commune " + str(pop[0]) + " Departement " + str(pop[1]))
+
+        if prevCommune == str(pop[0]) or prevCommune == "":
+            prevCodeDepartement.append(str(pop[1]))
+        elif pops.__sizeof__() == count and prevCommune == str(pop[0]):
+            prevCodeDepartement.append(str(pop[1]))
+            code_as_string = repr(prevCodeDepartement)
+            print(affichageCommune + prevCommune + affichageDepartement + code_as_string)
+        elif pops.__sizeof__() == count and prevCommune != str(pop[0]):
+            code_as_string = repr(prevCodeDepartement)
+            print(affichageCommune + prevCommune + affichageDepartement + code_as_string)
+            print(affichageCommune + str(pop[0]) + affichageDepartement + str(pop[1]))
+        else:
+            code_as_string = repr(prevCodeDepartement)
+            print(affichageCommune + prevCommune + affichageDepartement + code_as_string)
+            prevCodeDepartement = [str(pop[1])]
+
+        prevCommune = str(pop[0])
+        count += 1
 
 
 create_tables()  # cree les 3 tables dans data_insee.db
