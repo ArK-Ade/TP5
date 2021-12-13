@@ -16,18 +16,15 @@ from xml import etree
 import lxml
 import lxml.etree as etree
 
-os.remove("data_insee.db")
-
-conn = sqlite3.connect('data_insee.db')
-c = conn.cursor()
-
 
 def print_table(table_name):
     request = "SELECT * FROM " + table_name
-    c.execute(request)
-    print(c.fetchall())
+    pops = c.execute(request)
 
+    for pop in pops:
+        print(pop)
 
+# cree les 3 tables dans data_insee.db
 def create_tables():
     c.execute('''
         CREATE TABLE Communes
@@ -240,51 +237,49 @@ def sauvegarde_bdd():
 
 
 def restauration_bdd():
-    # TODO Reinitialiser la bdd
-
-    # os.remove("data_insee.db")
-    # create_tables()
-
-    # TODO Parser le fichier XML et injecter les données dans la BDD
+    # Initialisation
     tree = ET.parse('database.xml')
     root = tree.getroot()
-    # print(root[0].tag)
-
-    # root[0] Communes
-    # root[1] Departements
-    # root[2] Regions
-
     tableau = []
 
+    # Parsing du fichier XML
     for parent in root:
-
         for child in parent:
-            ligne = []
-            category = child.tag
-
+            ligne = [child.tag]
             for grand_child in child:
                 ligne.append(grand_child.text)
             tableau.append(ligne)
 
+    # Insertion des données dans la bdd
+    for ligne in tableau:
+        categorie = ligne[0]
+        ligne.pop(0)
+        ligne.pop(0)
+        if categorie == "Commune":
+            # Insertion des Communes dans la bdd
+            c.execute(
+                "INSERT INTO Communes(code_departement, code_commune, nom_commune, population_totale) VALUES(?,?,?,?)",
+                ligne)
+        elif categorie == "Departement":
+            # Insertion des Departements dans la bdd
+            c.execute("INSERT INTO Departements(code_departement, nom_departement, code_region) VALUES(?,?,?)", ligne)
+        elif categorie == "Region":
+            # Insertion des Regions dans la bdd
+            c.execute("INSERT INTO Regions(code_region, nom_region) VALUES(?,?)", ligne)
 
-    # Insertion des Communes dans la bdd
-    # Insertion des Departements dans la bdd
-    # Insertion des Regions dans la bdd
 
+os.remove("data_insee.db")
+conn = sqlite3.connect('data_insee.db')
+c = conn.cursor()
 
-    #print(tableau[len(tableau) - 1])
-    print("fin")
-    # Insertion des Departements dans la bdd
-
-    # Insertion des Regions dans la bdd
-
-
-create_tables()  # cree les 3 tables dans data_insee.db
-parsing_communes()
-parsing_departements()
-parsing_regions()
+create_tables()
+# parsing_communes()
+# parsing_departements()
+# parsing_regions()
 
 # afficher_pop_all_departements_regions()
 # afficher_meme_commune_different_departement()
-#sauvegarde_bdd()
-restauration_bdd()
+# sauvegarde_bdd()
+# restauration_bdd()
+
+#print_table("Regions")
