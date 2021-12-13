@@ -169,7 +169,7 @@ def sauvegarde_bdd():
         tableauCommunes.append(pop)
 
     for ligne in tableauCommunes:
-        Commune = ET.SubElement(Communes, "commune")
+        Commune = ET.SubElement(Communes, "Commune")
         Commune.set("Id", str(ligne[0]))
 
         code_departement = ET.SubElement(Commune, "code_departement")
@@ -248,17 +248,23 @@ def restauration_bdd():
     # root[1] Departements
     # root[2] Regions
 
-    # Insertion des Communes dans la bdd
     tableau = []
-    for child in root:
-        for child_child in child:
-            tableau.append(child_child.tag)
-            if child_child.tag == "Communes":
+
+    for parent in root:
+        for child in parent:
+            tableau.append(child.tag)
+
+            # Insertion des Communes dans la bdd
+            if child.tag == "Communes":
                 pass
-            elif child_child.tag == "Departement":
+            # Insertion des Departements dans la bdd
+            elif child.tag == "Departement":
                 pass
-            elif child_child.tag == "Regions":
-                pass
+            # Insertion des Regions dans la bdd
+            elif child.tag == "Regions":
+                for grand_child in child:
+                    print(str(grand_child.tag))
+
 
     print("fin")
     # Insertion des Departements dans la bdd
