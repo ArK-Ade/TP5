@@ -235,11 +235,35 @@ def sauvegarde_bdd():
 
 def restauration_bdd():
     # TODO Reinitaliser la bdd
+
+    # os.remove("data_insee.db")
     # create_tables()
+
     # TODO Parser le fichier XML et injecter les données dans la BDD
     tree = ET.parse('database.xml')
     root = tree.getroot()
-    print(root[0][1])
+    print(root[0].tag)
+
+    # root[0] Communes
+    # root[1] Departements
+    # root[2] Regions
+
+    # Insertion des Communes dans la bdd
+    tableau = []
+    for child in root:
+        for child_child in child:
+            tableau.append(child_child.tag)
+            if child_child.tag == "Communes":
+                pass
+            elif child_child.tag == "Departement":
+                pass
+            elif child_child.tag == "Regions":
+                pass
+
+    print("fin")
+    # Insertion des Departements dans la bdd
+
+    # Insertion des Regions dans la bdd
 
 
 create_tables()  # cree les 3 tables dans data_insee.db
@@ -249,5 +273,5 @@ parsing_regions()
 
 # afficher_pop_all_departements_regions()
 # afficher_meme_commune_different_departement()
-sauvegarde_bdd()
-# restauration_bdd()
+# sauvegarde_bdd()
+restauration_bdd()
