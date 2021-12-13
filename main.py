@@ -170,7 +170,9 @@ def sauvegarde_bdd():
 
     for ligne in tableauCommunes:
         Commune = ET.SubElement(Communes, "Commune")
-        Commune.set("Id", str(ligne[0]))
+
+        id_commune = ET.SubElement(Commune, "nom_region")
+        id_commune.text = str(ligne[0])
 
         code_departement = ET.SubElement(Commune, "code_departement")
         code_departement.text = ligne[1]
@@ -194,7 +196,9 @@ def sauvegarde_bdd():
 
     for ligne in tableauDepartements:
         Departement = ET.SubElement(Departements, "Departement")
-        Departement.set("Id_departement", str(ligne[0]))
+
+        id_departement = ET.SubElement(Departement, "nom_region")
+        id_departement.text = str(ligne[0])
 
         code_departement = ET.SubElement(Departement, "code_departement")
         code_departement.text = ligne[1]
@@ -215,7 +219,9 @@ def sauvegarde_bdd():
 
     for ligne in tableauRegions:
         Region = ET.SubElement(Regions, "Region")
-        Region.set("Id_departement", str(ligne[0]))
+
+        id_region = ET.SubElement(Region, "nom_region")
+        id_region.text = str(ligne[0])
 
         nom_region = ET.SubElement(Region, "nom_region")
         nom_region.text = str(ligne[1])
@@ -234,7 +240,7 @@ def sauvegarde_bdd():
 
 
 def restauration_bdd():
-    # TODO Reinitaliser la bdd
+    # TODO Reinitialiser la bdd
 
     # os.remove("data_insee.db")
     # create_tables()
@@ -242,7 +248,7 @@ def restauration_bdd():
     # TODO Parser le fichier XML et injecter les données dans la BDD
     tree = ET.parse('database.xml')
     root = tree.getroot()
-    print(root[0].tag)
+    # print(root[0].tag)
 
     # root[0] Communes
     # root[1] Departements
@@ -251,21 +257,22 @@ def restauration_bdd():
     tableau = []
 
     for parent in root:
+
         for child in parent:
-            tableau.append(child.tag)
+            ligne = []
+            category = child.tag
 
-            # Insertion des Communes dans la bdd
-            if child.tag == "Communes":
-                pass
-            # Insertion des Departements dans la bdd
-            elif child.tag == "Departement":
-                pass
-            # Insertion des Regions dans la bdd
-            elif child.tag == "Regions":
-                for grand_child in child:
-                    print(str(grand_child.tag))
+            for grand_child in child:
+                ligne.append(grand_child.text)
+            tableau.append(ligne)
 
 
+    # Insertion des Communes dans la bdd
+    # Insertion des Departements dans la bdd
+    # Insertion des Regions dans la bdd
+
+
+    #print(tableau[len(tableau) - 1])
     print("fin")
     # Insertion des Departements dans la bdd
 
@@ -279,5 +286,5 @@ parsing_regions()
 
 # afficher_pop_all_departements_regions()
 # afficher_meme_commune_different_departement()
-# sauvegarde_bdd()
+#sauvegarde_bdd()
 restauration_bdd()
