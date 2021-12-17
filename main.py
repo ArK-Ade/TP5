@@ -12,7 +12,6 @@ import sqlite3
 import os
 import xml.etree.ElementTree as ET
 from xml import etree
-
 import lxml
 import lxml.etree as etree
 
@@ -269,18 +268,27 @@ def restauration_bdd():
             c.execute("INSERT INTO Regions(code_region, nom_region) VALUES(?,?)", ligne)
 
 
-os.remove("data_insee.db")
-conn = sqlite3.connect('data_insee.db')
-c = conn.cursor()
+try:
+    os.remove("data_insee.db")
+    conn = sqlite3.connect('data_insee.db')
+    c = conn.cursor()
 
-create_tables()
-# parsing_communes()
-# parsing_departements()
-# parsing_regions()
+    create_tables()
+    parsing_communes()
+    parsing_departements()
+    parsing_regions()
 
-# afficher_pop_all_departements_regions()
-# afficher_meme_commune_different_departement()
-# sauvegarde_bdd()
-# restauration_bdd()
+    afficher_pop_all_departements_regions()
+    # afficher_meme_commune_different_departement()
+    # sauvegarde_bdd()
+    # restauration_bdd()
 
-# print_table("Regions")
+    # print_table("Regions")
+
+except sqlite3.Error as error:
+    print("Erreur pendant la connexion SQLite")
+
+finally:
+    if conn:
+        conn.close()
+        print("Fin de la connexion de la base de données")
