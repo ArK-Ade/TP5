@@ -15,7 +15,9 @@ from xml import etree
 import lxml
 import lxml.etree as etree
 
-
+"""
+Affiche la table (base de données) choisi en paramètre
+"""
 def print_table(table_name):
     request = "SELECT * FROM " + table_name
     pops = c.execute(request)
@@ -24,7 +26,9 @@ def print_table(table_name):
         print(pop)
 
 
-# cree les 3 tables dans data_insee.db
+"""
+cree les 3 tables dans data_insee.db
+"""
 def create_tables():
     c.execute('''
         CREATE TABLE Communes
@@ -88,7 +92,9 @@ def parsing_regions():
     file.close()
 
 
-# affichage des populations totales par départements
+"""
+affichage des populations totales par départements
+"""
 def afficher_pop_all_departements_regions():
     print("Affichage population départements")
 
@@ -110,7 +116,11 @@ def afficher_pop_all_departements_regions():
         print("Régions " + str(pop[1]) + " a une population totale de " + str(pop[0]))
 
 
-# affichage des communes possédant le meme nom dans diverses communes
+"""
+affichage des communes possédant le meme nom dans diverses communes
+"""
+
+
 def afficher_meme_commune_different_departement():
     request = "SELECT nom_commune, code_departement FROM Communes GROUP BY nom_commune,code_departement"
     pops = c.execute(request)
@@ -142,7 +152,11 @@ def afficher_meme_commune_different_departement():
         count += 1
 
 
-# Sauvegarde la base de données dans le fichier database.xml
+"""
+Sauvegarde la base de données dans le fichier database.xml
+"""
+
+
 def sauvegarde_bdd():
     # Initialisation des tableaux
 
@@ -236,6 +250,9 @@ def sauvegarde_bdd():
     print(pretty)
 
 
+"""
+Convertit le fichier XML en base de données SQLite
+"""
 def restauration_bdd():
     # Initialisation
     tree = ET.parse('database.xml')
@@ -268,6 +285,9 @@ def restauration_bdd():
             c.execute("INSERT INTO Regions(code_region, nom_region) VALUES(?,?)", ligne)
 
 
+"""
+Main
+"""
 try:
     os.remove("data_insee.db")
     conn = sqlite3.connect('data_insee.db')
