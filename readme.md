@@ -2,7 +2,7 @@
 
 ## A propos du projet
 
-Il s'agit d'un TP permettant d'apprendre à utiliser les base de données avec Python
+Il s'agit d'un TP ayant pour but d'utiliser les base de données avec le langage Python
 
 ### Construit avec
 
@@ -29,7 +29,7 @@ La fonction suivante ne doit être en aucun cas commenter :
 
 - creation_tables()
 
-Les fonctions suivantes peuvent être commenté et utilisé sans problèmes
+Les fonctions suivantes peuvent être commenté et utilisé
 
 - parsing_bdd()
 - afficher_pop_all_departements_regions()
@@ -38,7 +38,7 @@ Les fonctions suivantes peuvent être commenté et utilisé sans problèmes
 - restauration_bdd()
 - print_table()
 
-la fonction print_table() ne prends qu'en entrée les paramétres suivants
+la fonction print_table() ne prends qu'en entrée les paramètres suivants
 
 - Communes
 - Departements
