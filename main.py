@@ -20,12 +20,12 @@ Affiche la table (base de données) choisi en paramètre
 """
 
 
-def print_table(table_name: str):
-    request = "SELECT * FROM " + table_name
-    pops = c.execute(request)
+def print_table(nom_table_bdd: str):
+    requete = "SELECT * FROM " + nom_table_bdd
+    resultat_bdd = c.execute(requete)
 
-    for pop in pops:
-        print(pop)
+    for ligne_bdd in resultat_bdd:
+        print(ligne_bdd)
 
 
 """
@@ -33,7 +33,7 @@ cree les 3 tables dans data_insee.db
 """
 
 
-def create_tables():
+def creation_tables():
     c.execute('''
         CREATE TABLE Communes
         (id INTEGER PRIMARY KEY, 
@@ -63,38 +63,39 @@ Parcours les fichiers CSV et importe les données dans la base de données
 
 def parsing_bdd():
     # Parsing Communes
-    with open('communes.csv') as f:
+    with open('communes.csv') as fichier:
 
-        lignes = f.readlines()
+        lignes = fichier.readlines()
 
         for x in range(8, lignes.__len__() - 1):
-            current_line = lignes[x].split(';')
-            donnees = (current_line[2], current_line[5], current_line[6], current_line[9].replace(' ', ''))
+            ligne_actuelle = lignes[x].split(';')
+            tableau_donnee = (ligne_actuelle[2], ligne_actuelle[5], ligne_actuelle[6],
+                              ligne_actuelle[9].replace(' ', ''))
             c.execute(
                 "INSERT INTO Communes(code_departement,code_commune,nom_commune,population_totale) VALUES(?,?,?,?)",
-                donnees)
+                tableau_donnee)
 
-    # Parsing Departements
-    with open('departements.csv') as f:
+    # Parsing Départements
+    with open('departements.csv') as fichier:
 
-        lignes = f.readlines()
+        lignes = fichier.readlines()
 
         for x in range(8, lignes.__len__() - 1):
-            current_line = lignes[x].split(';')
-            donnees = (current_line[2], current_line[3], current_line[0])
+            ligne_actuelle = lignes[x].split(';')
+            tableau_donnee = (ligne_actuelle[2], ligne_actuelle[3], ligne_actuelle[0])
             c.execute("INSERT INTO Departements(code_departement,nom_departement,code_region) VALUES(?,?,?)",
-                      donnees)
+                      tableau_donnee)
 
     # Parsing Regions
-    with open('regions.csv') as f:
+    with open('regions.csv') as fichier:
 
-        lignes = f.readlines()
+        lignes = fichier.readlines()
 
         for x in range(8, lignes.__len__() - 1):
-            current_line = lignes[x].split(';')
-            donnees = (current_line[0], current_line[1])
+            ligne_actuelle = lignes[x].split(';')
+            tableau_donnee = (ligne_actuelle[0], ligne_actuelle[1])
             c.execute("INSERT INTO Regions(code_region,nom_region) VALUES(?,?)",
-                      donnees)
+                      tableau_donnee)
 
 
 """
@@ -105,22 +106,22 @@ affichage des populations totales par départements
 def afficher_pop_all_departements_regions():
     print("Affichage population départements")
 
-    request = "SELECT SUM(population_totale), code_departement FROM Communes GROUP BY code_departement"
-    pops = c.execute(request)
+    requete = "SELECT SUM(population_totale), code_departement FROM Communes GROUP BY code_departement"
+    resultat = c.execute(requete)
 
-    for pop in pops:
-        print("Département " + str(pop[1]) + " a une population totale de " + str(pop[0]))
+    for ligne_actuelle in resultat:
+        print("Département " + str(ligne_actuelle[1]) + " a une population totale de " + str(ligne_actuelle[0]))
 
     # affichage des populations totales par régions
     print("affichage population régions")
-    request = "SELECT SUM(population_totale), code_region " \
+    requete = "SELECT SUM(population_totale), code_region " \
               "FROM Communes INNER JOIN Departements ON Communes.code_departement = Departements.code_departement " \
               "GROUP BY code_region"
 
-    pops = c.execute(request)
+    resultat = c.execute(requete)
 
-    for pop in pops:
-        print("Régions " + str(pop[1]) + " a une population totale de " + str(pop[0]))
+    for ligne_actuelle in resultat:
+        print("Régions " + str(ligne_actuelle[1]) + " a une population totale de " + str(ligne_actuelle[0]))
 
 
 """
@@ -129,8 +130,8 @@ affichage des communes possédant le meme nom dans diverses communes
 
 
 def afficher_meme_commune_different_departement():
-    request = "SELECT nom_commune, code_departement FROM Communes GROUP BY nom_commune,code_departement"
-    pops = c.execute(request)
+    requete = "SELECT nom_commune, code_departement FROM Communes GROUP BY nom_commune,code_departement"
+    resultat = c.execute(requete)
 
     affichageCommune = "Commune "
     affichageDepartement = " Departement "
@@ -138,29 +139,29 @@ def afficher_meme_commune_different_departement():
     prevCodeDepartement = []
     count = 0
 
-    for pop in pops:
+    for ligne_actuelle in resultat:
 
-        if prevCommune == str(pop[0]) or prevCommune == "":
-            prevCodeDepartement.append(str(pop[1]))
-        elif pops.__sizeof__() == count and prevCommune == str(pop[0]):
-            prevCodeDepartement.append(str(pop[1]))
+        if prevCommune == str(ligne_actuelle[0]) or prevCommune == "":
+            prevCodeDepartement.append(str(ligne_actuelle[1]))
+        elif resultat.__sizeof__() == count and prevCommune == str(ligne_actuelle[0]):
+            prevCodeDepartement.append(str(ligne_actuelle[1]))
             code_as_string = repr(prevCodeDepartement)
             print(affichageCommune + prevCommune + affichageDepartement + code_as_string)
-        elif pops.__sizeof__() == count and prevCommune != str(pop[0]):
+        elif resultat.__sizeof__() == count and prevCommune != str(ligne_actuelle[0]):
             code_as_string = repr(prevCodeDepartement)
             print(affichageCommune + prevCommune + affichageDepartement + code_as_string)
-            print(affichageCommune + str(pop[0]) + affichageDepartement + str(pop[1]))
+            print(affichageCommune + str(ligne_actuelle[0]) + affichageDepartement + str(ligne_actuelle[1]))
         else:
             code_as_string = repr(prevCodeDepartement)
             print(affichageCommune + prevCommune + affichageDepartement + code_as_string)
-            prevCodeDepartement = [str(pop[1])]
+            prevCodeDepartement = [str(ligne_actuelle[1])]
 
-        prevCommune = str(pop[0])
+        prevCommune = str(ligne_actuelle[0])
         count += 1
 
 
 """
-Sauvegarde la base de données dans le fichier database.xml
+Sauvegarde la base de données dans le fichier database.xml et affiche le contenu du fichier xml 
 """
 
 
@@ -177,70 +178,70 @@ def sauvegarde_bdd():
     Regions = ET.SubElement(root, "Regions")
 
     # Insertion des Communes
-    request = "SELECT * FROM Communes"
-    pops = c.execute(request)
+    requete = "SELECT * FROM Communes"
+    resultat = c.execute(requete)
 
-    for pop in pops:
-        tableauCommunes.append(pop)
+    for ligne_actuelle in resultat:
+        tableauCommunes.append(ligne_actuelle)
 
-    for ligne in tableauCommunes:
+    for ligne_actuelle in tableauCommunes:
         Commune = ET.SubElement(Communes, "Commune")
 
         id_commune = ET.SubElement(Commune, "nom_region")
-        id_commune.text = str(ligne[0])
+        id_commune.text = str(ligne_actuelle[0])
 
         code_departement = ET.SubElement(Commune, "code_departement")
-        code_departement.text = ligne[1]
+        code_departement.text = ligne_actuelle[1]
 
         code_commune = ET.SubElement(Commune, "code_commune")
-        code_commune.text = str(ligne[2])
+        code_commune.text = str(ligne_actuelle[2])
 
         nom_commune = ET.SubElement(Commune, "nom_commune")
-        nom_commune.text = ligne[3]
+        nom_commune.text = ligne_actuelle[3]
 
         population_totale = ET.SubElement(Commune, "population_totale")
-        population_totale.text = str(ligne[4])
+        population_totale.text = str(ligne_actuelle[4])
 
     # Insertion des Departements
-    request = "SELECT * FROM Departements"
-    pops = c.execute(request)
+    requete = "SELECT * FROM Departements"
+    resultat = c.execute(requete)
 
-    for pop in pops:
-        tableauDepartements.append(pop)
+    for ligne_actuelle in resultat:
+        tableauDepartements.append(ligne_actuelle)
 
-    for ligne in tableauDepartements:
+    for ligne_actuelle in tableauDepartements:
         Departement = ET.SubElement(Departements, "Departement")
 
         id_departement = ET.SubElement(Departement, "nom_region")
-        id_departement.text = str(ligne[0])
+        id_departement.text = str(ligne_actuelle[0])
 
         code_departement = ET.SubElement(Departement, "code_departement")
-        code_departement.text = ligne[1]
+        code_departement.text = ligne_actuelle[1]
 
         nom_departement = ET.SubElement(Departement, "nom_departement")
-        nom_departement.text = ligne[2]
+        nom_departement.text = ligne_actuelle[2]
 
         code_region = ET.SubElement(Departement, "code_region")
-        code_region.text = str(ligne[3])
+        code_region.text = str(ligne_actuelle[3])
 
     # Insertion des Regions
-    request = "SELECT * FROM Regions"
-    pops = c.execute(request)
+    requete = "SELECT * FROM Regions"
+    resultat = c.execute(requete)
 
-    for pop in pops:
-        tableauRegions.append(pop)
+    for ligne_actuelle in resultat:
+        tableauRegions.append(ligne_actuelle)
 
-    for ligne in tableauRegions:
+    for ligne_actuelle in tableauRegions:
         Region = ET.SubElement(Regions, "Region")
 
         id_region = ET.SubElement(Region, "nom_region")
-        id_region.text = str(ligne[0])
+        id_region.text = str(ligne_actuelle[0])
 
         nom_region = ET.SubElement(Region, "nom_region")
-        nom_region.text = str(ligne[1])
+        nom_region.text = str(ligne_actuelle[1])
 
         code_region = ET.SubElement(Region, "code_region")
-        code_region.text = ligne[2]
+        code_region.text = ligne_actuelle[2]
 
     # Creation du fichier XML
     tree = ET.ElementTree(root)
@@ -265,10 +266,10 @@ def restauration_bdd():
 
     # Parsing du fichier XML
     for parent in root:
-        for child in parent:
-            ligne = [child.tag]
-            for grand_child in child:
-                ligne.append(grand_child.text)
+        for enfant in parent:
+            ligne = [enfant.tag]
+            for petit_fils in enfant:
+                ligne.append(petit_fils.text)
             tableau.append(ligne)
 
     # Insertion des données dans la bdd
@@ -295,13 +296,13 @@ try:
     conn = sqlite3.connect('data_insee.db')
     c = conn.cursor()
 
-    create_tables()
+    creation_tables()
     parsing_bdd()
 
     afficher_pop_all_departements_regions()
-    # afficher_meme_commune_different_departement()
-    # sauvegarde_bdd()
-    # restauration_bdd()
+    afficher_meme_commune_different_departement()
+    sauvegarde_bdd()
+    restauration_bdd()
 
     # print_table("Regions")
 

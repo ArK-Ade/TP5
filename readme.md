@@ -9,8 +9,6 @@ Il s'agit d'un TP permettant d'apprendre à utiliser les base de données avec P
 * 🐙 Github
 * 💻 Pycharm
 
-<!-- GETTING STARTED -->
-
 ## Pour commencer
 
 ### Prérequis
@@ -20,6 +18,8 @@ Vous devez mettre l'interpréteur sur Python 3.7
 ### Installation
 
 - Ouvrir Pycharm
+- Sélectionner le projet
+- Installer les librairies demandées
 
 ## Usage
 
@@ -27,7 +27,7 @@ Pour utiliser le programme, il suffit de commenter ou non les fonctions présent
 
 La fonction suivante ne doit être en aucun cas commenter :
 
-- create_tables()
+- creation_tables()
 
 Les fonctions suivantes peuvent être commenté et utilisé sans problèmes
 
