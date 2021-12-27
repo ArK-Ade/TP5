@@ -20,7 +20,7 @@ Affiche la table (base de données) choisi en paramètre
 """
 
 
-def print_table(table_name):
+def print_table(table_name: str):
     request = "SELECT * FROM " + table_name
     pops = c.execute(request)
 
@@ -63,37 +63,38 @@ Parcours les fichiers CSV et importe les données dans la base de données
 
 def parsing_bdd():
     # Parsing Communes
-    file = open('communes.csv', 'rt')
-    lignes = file.readlines()
+    with open('communes.csv') as f:
 
-    print(lignes.__len__() - 1)
-    for x in range(8, lignes.__len__() - 1):
-        current_line = lignes[x].split(';')
-        donnees = (current_line[2], current_line[5], current_line[6], current_line[9].replace(' ', ''))
-        c.execute("INSERT INTO Communes(code_departement,code_commune,nom_commune,population_totale) VALUES(?,?,?,?)",
-                  donnees)
+        lignes = f.readlines()
+
+        for x in range(8, lignes.__len__() - 1):
+            current_line = lignes[x].split(';')
+            donnees = (current_line[2], current_line[5], current_line[6], current_line[9].replace(' ', ''))
+            c.execute(
+                "INSERT INTO Communes(code_departement,code_commune,nom_commune,population_totale) VALUES(?,?,?,?)",
+                donnees)
 
     # Parsing Departements
-    file = open('departements.csv', 'rt')
-    lignes = file.readlines()
+    with open('departements.csv') as f:
 
-    for x in range(8, lignes.__len__() - 1):
-        current_line = lignes[x].split(';')
-        donnees = (current_line[2], current_line[3], current_line[0])
-        c.execute("INSERT INTO Departements(code_departement,nom_departement,code_region) VALUES(?,?,?)",
-                  donnees)
+        lignes = f.readlines()
+
+        for x in range(8, lignes.__len__() - 1):
+            current_line = lignes[x].split(';')
+            donnees = (current_line[2], current_line[3], current_line[0])
+            c.execute("INSERT INTO Departements(code_departement,nom_departement,code_region) VALUES(?,?,?)",
+                      donnees)
 
     # Parsing Regions
-    file = open('regions.csv', 'rt')
-    lignes = file.readlines()
+    with open('regions.csv') as f:
 
-    for x in range(8, lignes.__len__() - 1):
-        current_line = lignes[x].split(';')
-        donnees = (current_line[0], current_line[1])
-        c.execute("INSERT INTO Regions(code_region,nom_region) VALUES(?,?)",
-                  donnees)
+        lignes = f.readlines()
 
-    file.close()
+        for x in range(8, lignes.__len__() - 1):
+            current_line = lignes[x].split(';')
+            donnees = (current_line[0], current_line[1])
+            c.execute("INSERT INTO Regions(code_region,nom_region) VALUES(?,?)",
+                      donnees)
 
 
 """
@@ -309,5 +310,6 @@ except sqlite3.Error as error:
 
 finally:
     if conn:
+        conn.commit()
         conn.close()
         print("Fin de la connexion de la base de données")
