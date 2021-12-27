@@ -12,6 +12,9 @@ Affiche la table (base de données) choisi en paramètre
 
 
 def print_table(nom_table_bdd: str):
+    if nom_table_bdd is not "Regions" or "Departements" or "Communes":
+        print("Paramètre incorrecte")
+
     requete = "SELECT * FROM " + nom_table_bdd
     resultat_bdd = c.execute(requete)
 
@@ -283,19 +286,19 @@ def restauration_bdd():
 
 # Main
 try:
+    # Supprime le fichier s'il existe
     os.remove("data_insee.db")
     conn = sqlite3.connect('data_insee.db')
     c = conn.cursor()
 
+    # Fonctions
     creation_tables()
     parsing_bdd()
-
     afficher_pop_all_departements_regions()
     afficher_meme_commune_different_departement()
     sauvegarde_bdd()
     restauration_bdd()
-
-    # print_table("Regions")
+    print_table("Regions")
 
 except sqlite3.Error as error:
     print("Erreur pendant la connexion SQLite")

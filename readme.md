@@ -38,6 +38,12 @@ Les fonctions suivantes peuvent être commenté et utilisé sans problèmes
 - restauration_bdd()
 - print_table()
 
+la fonction print_table() ne prends qu'en entrée les paramétres suivants
+
+- Communes
+- Departements
+- Regions
+
 Pour plus d'informations, veillez-vous referer à la documentation du code
 
 ## Contact
