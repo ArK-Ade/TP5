@@ -1,13 +1,4 @@
-"""
-https://www.kite.com/python/answers/how-to-insert-the-contents-of-a-csv-file-into-an-sqlite3-database-in-python
-
-https://evanhahn.com/python-skip-header-csv-reader/
-
-https://www.kite.com/python/docs/csv.reader
-
-https://stackoverflow.com/questions/16846460/skip-the-last-row-of-csv-file-when-iterating-in-python
-"""
-
+# Librairies
 import sqlite3
 import os
 import xml.etree.ElementTree as ET
