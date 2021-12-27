@@ -1,50 +1,47 @@
-# TP5
+# Polytech DI5 TP5
 
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`github_username`, `github_repo`, `twitter_handle`, `email`
+## A propos du projet
 
-Then you can delete these lines !
-<!-- ABOUT THE PROJECT -->
+Il s'agit d'un TP permettant d'apprendre à utiliser les base de données avec Python
 
-## About The Project
-
-Description
-
-### Built With
+### Construit avec
 
 * 🐙 Github
 * 💻 Pycharm
 
 <!-- GETTING STARTED -->
 
-## Getting Started
+## Pour commencer
 
-To get the project you need to ...
+### Prérequis
 
-### Prerequisites
-
-You need to install the interpreter Python 3.7
+Vous devez mettre l'interpréteur sur Python 3.7
 
 ### Installation
 
-1. Open Pycharm
-3. Set the current interpreter to Python 3.7
-
-<!-- USAGE EXAMPLES -->
+- Ouvrir Pycharm
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos
-work well in this space. You may also link to more resources.
+Pour utiliser le programme, il suffit de commenter ou non les fonctions présentes dans le main.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+La fonction suivante ne doit être en aucun cas commenter :
 
+- create_tables()
 
-<!-- CONTACT -->
+Les fonctions suivantes peuvent être commenté et utilisé sans problèmes
+
+- parsing_bdd()
+- afficher_pop_all_departements_regions()
+- afficher_meme_commune_different_departement()
+- sauvegarde_bdd()
+- restauration_bdd()
+- print_table()
+
+Pour plus d'informations, veillez-vous referer à la documentation du code
 
 ## Contact
 
 Anthony ADELAIDE - Alan GUENEGOU
 
-Project Link: [https://github.com/ArK-Ade/TP5](https://github.com/ArK-Ade/TP5)
+Lien du projet : [https://github.com/ArK-Ade/TP5](https://github.com/ArK-Ade/TP5)
